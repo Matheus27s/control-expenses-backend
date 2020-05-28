@@ -16,7 +16,7 @@ import javax.persistence.SequenceGenerator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-public class CategoryStatus implements Serializable {
+public class CategoryUtil implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String name;	

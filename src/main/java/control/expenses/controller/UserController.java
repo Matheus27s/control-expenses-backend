@@ -21,7 +21,7 @@ import control.expenses.repository.UserRepository;
 @RestController
 @CrossOrigin
 @RequestMapping("/users")
-public class IndexController {
+public class UserController {
 	
 	@Autowired
 	private UserRepository userRepository;

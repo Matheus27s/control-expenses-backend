@@ -1,6 +1,9 @@
 package control.expenses.controller;
 
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import control.expenses.model.Recipe;
 import control.expenses.model.User;
 import control.expenses.repository.UserRepository;
 
@@ -37,6 +41,25 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<User> insert( @RequestBody User user ) {
 		
+		if( user.getId() != null ) {
+			
+//			Usuário já existe.		
+			Optional<User> aux = userRepository.findById(user.getId());
+			user.setRecipes(aux.get().getRecipes());
+			
+		} else {
+			
+//			Primeiro acesso.
+			List<Recipe> recipes = new ArrayList<Recipe>();
+			Recipe recipe = new Recipe();
+				recipe.setDateMonth(new Date());
+				recipe.setValue(0f);
+				recipe.setUser(user);
+				recipes.add(recipe);
+			user.setRecipes(recipes);
+			
+		}
+		
 		if(user.getProfile() != null ) {
 			
 			String encodedString = Base64.getEncoder().encodeToString(user.getProfile().getBytes());
@@ -44,13 +67,6 @@ public class UserController {
 			
 		} else {
 			user.setProfile("");
-		}
-		
-		if( user.getId() != null ) {
-			
-			Optional<User> aux = userRepository.findById(user.getId());
-			user.setRecipes(aux.get().getRecipes());
-			
 		}
 		
 		user = userRepository.save(user);

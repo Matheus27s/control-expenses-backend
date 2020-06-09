@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,15 +42,8 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<User> insert( @RequestBody User user ) {
 		
-		if( user.getId() != null ) {
+		if( user.getId() == null ) {
 			
-//			Usuário já existe.		
-			Optional<User> aux = userRepository.findById(user.getId());
-			user.setRecipes(aux.get().getRecipes());
-			
-		} else {
-			
-//			Primeiro acesso.
 			List<Recipe> recipes = new ArrayList<Recipe>();
 			Recipe recipe = new Recipe();
 				recipe.setDateMonth(new Date());
@@ -57,18 +51,25 @@ public class UserController {
 				recipe.setUser(user);
 				recipes.add(recipe);
 			user.setRecipes(recipes);
+			user.setProfile("");
 			
-		}
+			user = userRepository.save(user);
+		} 
 		
-		if(user.getProfile() != null ) {
+		return ResponseEntity.ok(user);
+	}
+	
+	@PutMapping
+	public ResponseEntity<User> update( @RequestBody User user ) {
+		
+		if( user.getId() != null ) {
 			
 			String encodedString = Base64.getEncoder().encodeToString(user.getProfile().getBytes());
 			user.setProfile(encodedString);
 			
-		} else {
-			user.setProfile("");
+			user = userRepository.save(user);
 		}
-		
+				
 		user = userRepository.save(user);
 		return ResponseEntity.ok(user);
 		

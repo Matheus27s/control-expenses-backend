@@ -22,9 +22,14 @@ public class SessionController {
 	
 	@PostMapping
 	public  ResponseEntity<User> login( @RequestBody User user ) {
-						
-		user = userRepository.login(user.getLogin());
-		return ResponseEntity.ok(user);
+					
+			user = userRepository.login(user.getLogin());
+			
+			if( user == null ) {
+				return ResponseEntity.ok(null);
+			}
+
+			return ResponseEntity.ok(user);
 	}
 
 }

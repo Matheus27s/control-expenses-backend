@@ -33,10 +33,8 @@ public class UserController {
 	
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<User> get(@PathVariable(value = "id") Long id) {
-		
 		Optional<User> user =  userRepository.findById(id);
 		return ResponseEntity.ok(user.get());
-		
 	}
 	
 	@PostMapping
